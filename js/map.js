@@ -72,7 +72,7 @@ var PIN_CENTER_X = 600;
 var PIN_CENTER_Y = 300;
 var addressPart = document.querySelector('#address');
 var pinClass = '.map__pin';
-var pinsOnMap = document.querySelector('.map__pins');
+var formFieldsets = document.querySelectorAll('.ad-form fieldset');
 
 var randomSort = function () {
   return Math.random() - 0.5;
@@ -96,6 +96,11 @@ var getSortArray = function (arr) {
   return arr.slice(0).sort(randomSort);
 };
 
+var getRandomElementWithoutRepeat = function (arr) {
+  var randomPoint = Math.floor(Math.random() * arr.length);
+  return arr.splice(randomPoint, 1);
+};
+
 var offers = [];
 var getOffers = function () {
   for (var i = 0; i < OFFER_COUNT; i++) {
@@ -108,7 +113,7 @@ var getOffers = function () {
       },
 
       'offer': {
-        'title': offerTitles.sort(randomSort)[i],
+        'title': getRandomElementWithoutRepeat(offerTitles),
         'address': сoordinateX + ',' + сoordinateY,
         'price': getRandomFromInterval(PRICE_MIN, PRICE_MAX),
         'type': getRandomElement(offerTypes),
@@ -147,6 +152,7 @@ var getPins = function () {
     template.querySelector('img').src = offers[i].author.avatar;
     template.id = pinPrefix + i;
     pinFragment.appendChild(template);
+    template.addEventListener('click', pinClickHandler);
   }
   pinsBox.appendChild(pinFragment);
 };
@@ -184,10 +190,10 @@ var getPhotos = function (arr) {
   return photoBox;
 };
 
-var getArticles = function (i) {
+var getCards = function (i) {
   var pinArticle = document.querySelector('template').content.querySelector('.map__card');
   var afterArticle = document.querySelector('.map__filters-container');
-  closeArticle();
+  closeCards();
   var newArticle = pinArticle.cloneNode(true);
   newArticle.querySelector('.popup__avatar').src = offers[i].author.avatar;
   newArticle.querySelector('.popup__title').textContent = offers[i].offer.title;
@@ -205,83 +211,50 @@ var getArticles = function (i) {
   return newArticle;
 };
 
-var activatePage = function () {
+var mainPinMouseUpHandler = function () {
   closePageOverlay();
   getActiveFieldsets();
   addressPart.value = PIN_CENTER_X + ', ' + PIN_CENTER_Y;
   getPins();
 };
 
-var activatePageByEnter = function (evt) {
-  if (evt.keyCode === KeyCodes.ENTER) {
-    activatePage();
-  }
-};
-
-mainPin.addEventListener('mouseup', activatePage);
-mainPin.addEventListener('keydown', activatePageByEnter);
-
-var getUnactiveFieldsets = function () {
-  var formFieldsets = document.querySelectorAll('.ad-form fieldset');
-  formFieldsets.forEach(function (item) {
-    item.setAttribute('disabled', true);
-  });
-};
+mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
 
 var getActiveFieldsets = function () {
   var form = document.querySelector('.ad-form');
-  var formFieldsets = form.querySelectorAll('.ad-form fieldset');
   form.classList.remove('ad-form--disabled');
   formFieldsets.forEach(function (item) {
     item.removeAttribute('disabled');
   });
 };
 
-getUnactiveFieldsets();
-
-var getPinByAttribute = function (evt) {
-  closeArticle();
-  var indexPin = evt.target.closest('.map__pin:not(.map__pin--main)');
-  if (indexPin && indexPin.tagName === 'BUTTON') {
-    for (var i = 0; i < OFFER_COUNT; i++) {
-      var id = evt.target.closest('.map__pin:not(.map__pin--main)').id;
-      var index = parseInt(id.substr(pinPrefix.length), 10);
-      getArticles(index);
-      mapSection.querySelector('.popup__close').addEventListener('click', closeArticleByClick);
-    }
-  }
+var pinClickHandler = function (evt) {
+  closeCards();
+  var index = parseInt(evt.currentTarget.id.substr(pinPrefix.length), 10);
+  getCards(index);
 };
 
-pinsOnMap.addEventListener('click', getPinByAttribute);
-
-var closeArticle = function () {
+var closeCards = function () {
   var mapCard = document.querySelector('.map__card');
   if (mapSection.contains(mapCard)) {
     mapCard.remove();
   }
 };
 
-var closeArticleByClick = function (evt) {
+var cardClickHandler = function (evt) {
   document.querySelector('popup__close');
   if (evt.target.classList.contains('popup__close')) {
-    closeArticle();
+    closeCards();
   }
 };
 
-var closeArticleByEsc = function (evt) {
+var cardKeydownHandler = function (evt) {
   if (evt.keyCode === KeyCodes.ESC) {
-    closeArticle();
+    closeCards();
   }
 };
 
-mapSection.addEventListener('click', closeArticleByClick);
-mapSection.addEventListener('keydown', closeArticleByEsc);
+document.addEventListener('click', cardClickHandler);
+document.addEventListener('keydown', cardKeydownHandler);
 
-var closePins = function () {
-  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-  mapPins.forEach(function (item) {
-    item.parentNode.removeChild(item);
-  });
-};
 
-closePins();
