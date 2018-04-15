@@ -96,7 +96,7 @@ var getSortArray = function (arr) {
   return arr.slice(0).sort(randomSort);
 };
 
-var getRandomElementWithoutRepeat = function (arr) {
+var getRandomTitleElement = function (arr) {
   var randomPoint = Math.floor(Math.random() * arr.length);
   return arr.splice(randomPoint, 1);
 };
@@ -113,7 +113,7 @@ var getOffers = function () {
       },
 
       'offer': {
-        'title': getRandomElementWithoutRepeat(offerTitles),
+        'title': getRandomTitleElement(offerTitles),
         'address': сoordinateX + ',' + сoordinateY,
         'price': getRandomFromInterval(PRICE_MIN, PRICE_MAX),
         'type': getRandomElement(offerTypes),
@@ -257,5 +257,4 @@ var cardKeydownHandler = function (evt) {
 
 document.addEventListener('click', cardClickHandler);
 document.addEventListener('keydown', cardKeydownHandler);
-
 
