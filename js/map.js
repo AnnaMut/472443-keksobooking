@@ -219,6 +219,7 @@ var mainPinMouseUpHandler = function () {
 };
 
 mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
+mainPin.addEventListener('keydown', mainPinMouseUpHandler);
 
 var getActiveFieldsets = function () {
   var form = document.querySelector('.ad-form');
