@@ -16,6 +16,8 @@ var GUESTS_MIN = 1;
 var GUESTS_MAX = 20;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 44;
+var PIN_CENTER_X = 600;
+var PIN_CENTER_Y = 300;
 
 var offerTitles = [
   'Большая уютная квартира',
@@ -68,8 +70,6 @@ var KeyCodes = {
 var pinPrefix = 'pin-';
 var mainPin = document.querySelector('.map__pin--main');
 var mapSection = document.querySelector('.map');
-var PIN_CENTER_X = 600;
-var PIN_CENTER_Y = 300;
 var addressPart = document.querySelector('#address');
 var pinClass = '.map__pin';
 var formFieldsets = document.querySelectorAll('.ad-form fieldset');
@@ -79,7 +79,7 @@ var randomSort = function () {
 };
 
 var getRandomSubarray = function (arr) {
-  var copyArr = arr.sort(randomSort);
+  var copyArr = arr.slice(0).sort(randomSort);
   return copyArr.slice(0, 1 + Math.floor(Math.random() * arr.length));
 };
 
@@ -96,11 +96,6 @@ var getSortArray = function (arr) {
   return arr.slice(0).sort(randomSort);
 };
 
-var getRandomTitleElement = function (arr) {
-  var randomPoint = Math.floor(Math.random() * arr.length);
-  return arr.splice(randomPoint, 1);
-};
-
 var offers = [];
 var getOffers = function () {
   for (var i = 0; i < OFFER_COUNT; i++) {
@@ -113,7 +108,7 @@ var getOffers = function () {
       },
 
       'offer': {
-        'title': getRandomTitleElement(offerTitles),
+        'title': offerTitles[i],
         'address': сoordinateX + ',' + сoordinateY,
         'price': getRandomFromInterval(PRICE_MIN, PRICE_MAX),
         'type': getRandomElement(offerTypes),
@@ -218,9 +213,6 @@ var mainPinMouseUpHandler = function () {
   getPins();
 };
 
-mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
-mainPin.addEventListener('keydown', mainPinMouseUpHandler);
-
 var getActiveFieldsets = function () {
   var form = document.querySelector('.ad-form');
   form.classList.remove('ad-form--disabled');
@@ -255,6 +247,8 @@ var cardKeydownHandler = function (evt) {
   }
 };
 
+mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
+mainPin.addEventListener('keydown', mainPinMouseUpHandler);
 document.addEventListener('click', cardClickHandler);
 document.addEventListener('keydown', cardKeydownHandler);
 
