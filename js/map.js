@@ -73,6 +73,47 @@ var mapSection = document.querySelector('.map');
 var addressPart = document.querySelector('#address');
 var pinClass = '.map__pin';
 var formFieldsets = document.querySelectorAll('.ad-form fieldset');
+var form = document.querySelector('.ad-form');
+var formTitle = form.querySelector('#title');
+var invalidBorderColorClass = 'invalidcolor';
+var formType = form.querySelector('#type');
+var formPrice = form.querySelector('#price');
+var formRoomNumber = form.querySelector('#room_number');
+var formRoomCapacity = form.querySelector('#capacity');
+var formSubmitButton = form.querySelector('.ad-form__submit');
+var formResetButton = form.querySelector('.ad-form__reset');
+var MAX_PRICE = 1000000;
+
+var pricesLimits = {
+  'bungalo': 0,
+  'flat': 1000,
+  'house': 5000,
+  'palace': 10000
+};
+
+var labelLimits = {
+  'minimum': 30,
+  'maximum': 100
+};
+
+var guests = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0']
+};
+
+var formTitleValidationMessages = {
+  tooShort: 'Заголовок объявления должен состоять минимум из ' + labelLimits.minimum + ' символов',
+  tooLong: 'Заголовок объявления не должен превышать ' + labelLimits.maximum + ' символов',
+  valueMissing: 'Пожалуйста, введите заголовок Вашего объявления'
+};
+
+var formPriceValidationMesssages = {
+  rangeUnderflow: 'Цена для данного типа жилья слишком мала',
+  rangeOverflow: 'Цена не должна превышать ' + MAX_PRICE,
+  valueMissing: 'Пожалуйста, введите цену'
+};
 
 var randomSort = function () {
   return Math.random() - 0.5;
@@ -227,7 +268,6 @@ var mainPinMouseUpHandler = function () {
 };
 
 var getActiveFieldsets = function () {
-  var form = document.querySelector('.ad-form');
   form.classList.remove('ad-form--disabled');
   formFieldsets.forEach(function (item) {
     item.removeAttribute('disabled');
@@ -246,7 +286,139 @@ var cardKeydownHandler = function (evt) {
   }
 };
 
+var closePins = function () {
+  var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+  mapPins.forEach(function (item) {
+    item.parentNode.removeChild(item);
+  });
+};
+
+var setMinMaxLengthTitle = function () {
+  formTitle.minLength = labelLimits.minimum;
+  formTitle.maxLength = labelLimits.maximum;
+};
+setMinMaxLengthTitle();
+
+var formTitleInvalidHandler = function () {
+  var validity = formTitle.validity;
+  if (validity.valid) {
+    formTitle.setCustomValidity('');
+    formTitle.classList.remove(invalidBorderColorClass);
+    return;
+  }
+  if (validity.tooShort) {
+    formTitle.setCustomValidity(formTitleValidationMessages.tooShort);
+    formTitle.classList.add(invalidBorderColorClass);
+    return;
+  }
+  if (validity.tooLong) {
+    formTitle.setCustomValidity(formTitleValidationMessages.tooLong);
+    formTitle.classList.add(invalidBorderColorClass);
+    return;
+  }
+  if (validity.valueMissing) {
+    formTitle.setCustomValidity(formTitleValidationMessages.valueMissing);
+    formTitle.classList.add(invalidBorderColorClass);
+    return;
+  }
+};
+
+var formTitleBlurHandler = function (evt) {
+  evt.target.checkValidity();
+};
+
+var formTitleFocusHandler = function () {
+  formTitle.classList.remove(invalidBorderColorClass);
+};
+
+var formTitleChangeHandler = function () {
+  formTitle.setCustomValidity('');
+  formTitle.classList.remove(invalidBorderColorClass);
+};
+
+var formTypeChangeHandler = function () {
+  formPrice.min = pricesLimits[formType.value];
+};
+
+var setMaxPrice = function () {
+  formPrice.max = MAX_PRICE;
+  formPrice.placeholder = pricesLimits.house;
+};
+setMaxPrice();
+
+var formPriceInvalidHandler = function () {
+  var validity = formPrice.validity;
+  if (validity.valid) {
+    formPrice.setCustomValidity('');
+    formPrice.classList.remove(invalidBorderColorClass);
+    return;
+  }
+  if (validity.rangeUnderflow) {
+    formPrice.setCustomValidity(formPriceValidationMesssages.rangeUnderflow);
+    formPrice.classList.add(invalidBorderColorClass);
+    return;
+  }
+  if (validity.rangeOverflow) {
+    formPrice.setCustomValidity(formPriceValidationMesssages.rangeOverflow);
+    formPrice.classList.add(invalidBorderColorClass);
+    return;
+  }
+  if (validity.valueMissing) {
+    formPrice.setCustomValidity(formPriceValidationMesssages.valueMissing);
+    formPrice.classList.add(invalidBorderColorClass);
+    return;
+  }
+};
+
+var formPriceChangeHandler = function () {
+  formPrice.setCustomValidity('');
+  formPrice.classList.remove(invalidBorderColorClass);
+};
+
+var formRoomNumberChangeHandler = function () {
+  var key = formRoomNumber.value;
+  formRoomCapacity.value = guests[key][0];
+  for (var i = 0; i < formRoomCapacity.options.length; i++) {
+    if (guests[key].indexOf(formRoomCapacity.options[i].value) === -1) {
+      formRoomCapacity.options[i].setAttribute('disabled', '');
+    } else {
+      formRoomCapacity.options[i].removeAttribute('disabled');
+    }
+  }
+};
+
+var formTimeChangeHandler = function (element) {
+  form.timein.value = element.target.value;
+  form.timeout.value = element.target.value;
+};
+
+var formSubmitButtonClickHandler = function () {
+  formTitle.addEventListener('invalid', formTitleInvalidHandler);
+  formPrice.addEventListener('invalid', formPriceInvalidHandler);
+};
+
+var resetForm = function () {
+  formTitle.classList.remove(invalidBorderColorClass);
+  formPrice.classList.remove(invalidBorderColorClass);
+  form.reset();
+  closeCards();
+  closePins();
+  mapSection.classList.add('map--faded');
+  form.classList.add('ad-form--disabled');
+};
+
 mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
 document.addEventListener('click', cardClickHandler);
 document.addEventListener('keydown', cardKeydownHandler);
 
+formTitle.addEventListener('invalid', formTitleInvalidHandler);
+formTitle.addEventListener('blur', formTitleBlurHandler);
+formTitle.addEventListener('focus', formTitleFocusHandler);
+formTitle.addEventListener('change', formTitleChangeHandler);
+formType.addEventListener('change', formTypeChangeHandler);
+formPrice.addEventListener('invalid', formPriceInvalidHandler);
+formPrice.addEventListener('change', formPriceChangeHandler);
+formRoomNumber.addEventListener('change', formRoomNumberChangeHandler);
+form.addEventListener('change', formTimeChangeHandler);
+formSubmitButton.addEventListener('click', formSubmitButtonClickHandler);
+formResetButton.addEventListener('click', resetForm);

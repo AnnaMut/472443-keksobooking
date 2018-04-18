@@ -1213,3 +1213,8 @@ fieldset {
       -ms-transform: translateX(-50%);
           transform: translateX(-50%);
 }
+
+.ad-form__element .invalidcolor
+{
+    border: 3px solid #ff0000;
+}
