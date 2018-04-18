@@ -136,22 +136,6 @@ var closePageOverlay = function () {
   mapSection.classList.remove('map--faded');
 };
 
-var getPins = function () {
-  var pinsBox = document.querySelector('.map__pins');
-  var pinTemplate = document.querySelector('template').content.querySelector(pinClass);
-  var pinFragment = document.createDocumentFragment();
-  for (var i = 0; i < OFFER_COUNT; i++) {
-    var template = pinTemplate.cloneNode(true);
-    template.style.left = offers[i].location.x - PIN_WIDTH + 'px';
-    template.style.top = offers[i].location.y - PIN_HEIGHT + 'px';
-    template.querySelector('img').src = offers[i].author.avatar;
-    template.id = pinPrefix + i;
-    pinFragment.appendChild(template);
-    template.addEventListener('click', pinClickHandler);
-  }
-  pinsBox.appendChild(pinFragment);
-};
-
 var typesDictionary = {
   palace: 'Дворец',
   flat: 'Квартира',
@@ -185,6 +169,13 @@ var getPhotos = function (arr) {
   return photoBox;
 };
 
+var closeCards = function () {
+  var mapCard = document.querySelector('.map__card');
+  if (mapSection.contains(mapCard)) {
+    mapCard.remove();
+  }
+};
+
 var getCards = function (i) {
   var pinArticle = document.querySelector('template').content.querySelector('.map__card');
   var afterArticle = document.querySelector('.map__filters-container');
@@ -206,6 +197,28 @@ var getCards = function (i) {
   return newArticle;
 };
 
+var pinClickHandler = function (evt) {
+  closeCards();
+  var index = parseInt(evt.currentTarget.id.substr(pinPrefix.length), 10);
+  getCards(index);
+};
+
+var getPins = function () {
+  var pinsBox = document.querySelector('.map__pins');
+  var pinTemplate = document.querySelector('template').content.querySelector(pinClass);
+  var pinFragment = document.createDocumentFragment();
+  for (var i = 0; i < OFFER_COUNT; i++) {
+    var template = pinTemplate.cloneNode(true);
+    template.style.left = offers[i].location.x - PIN_WIDTH + 'px';
+    template.style.top = offers[i].location.y - PIN_HEIGHT + 'px';
+    template.querySelector('img').src = offers[i].author.avatar;
+    template.id = pinPrefix + i;
+    pinFragment.appendChild(template);
+    template.addEventListener('click', pinClickHandler);
+  }
+  pinsBox.appendChild(pinFragment);
+};
+
 var mainPinMouseUpHandler = function () {
   closePageOverlay();
   getActiveFieldsets();
@@ -221,21 +234,7 @@ var getActiveFieldsets = function () {
   });
 };
 
-var pinClickHandler = function (evt) {
-  closeCards();
-  var index = parseInt(evt.currentTarget.id.substr(pinPrefix.length), 10);
-  getCards(index);
-};
-
-var closeCards = function () {
-  var mapCard = document.querySelector('.map__card');
-  if (mapSection.contains(mapCard)) {
-    mapCard.remove();
-  }
-};
-
 var cardClickHandler = function (evt) {
-  document.querySelector('popup__close');
   if (evt.target.classList.contains('popup__close')) {
     closeCards();
   }
@@ -248,7 +247,6 @@ var cardKeydownHandler = function (evt) {
 };
 
 mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
-mainPin.addEventListener('keydown', mainPinMouseUpHandler);
 document.addEventListener('click', cardClickHandler);
 document.addEventListener('keydown', cardKeydownHandler);
 
