@@ -18,6 +18,7 @@ var PIN_WIDTH = 40;
 var PIN_HEIGHT = 44;
 var PIN_CENTER_X = 600;
 var PIN_CENTER_Y = 300;
+var MAX_PRICE = 1000000;
 
 var offerTitles = [
   'Большая уютная квартира',
@@ -80,9 +81,10 @@ var formType = form.querySelector('#type');
 var formPrice = form.querySelector('#price');
 var formRoomNumber = form.querySelector('#room_number');
 var formRoomCapacity = form.querySelector('#capacity');
+var formTimeInSelect = form.querySelector('#timein');
+var formTimeOutSelect = form.querySelector('#timeout');
 var formSubmitButton = form.querySelector('.ad-form__submit');
 var formResetButton = form.querySelector('.ad-form__reset');
-var MAX_PRICE = 1000000;
 
 var pricesLimits = {
   'bungalo': 0,
@@ -210,11 +212,23 @@ var getPhotos = function (arr) {
   return photoBox;
 };
 
+var cardCloseClickHandler = function (evt) {
+  if (evt.target.classList.contains('popup__close')) {
+    closeCards();
+  }
+};
+
+var cardСloseKeydownHandler = function (evt) {
+  if (evt.keyCode === KeyCodes.ESC) {
+    closeCards();
+  }
+};
 var closeCards = function () {
   var mapCard = document.querySelector('.map__card');
   if (mapSection.contains(mapCard)) {
     mapCard.remove();
   }
+  document.removeEventListener('keydown', cardСloseKeydownHandler);
 };
 
 var getCards = function (i) {
@@ -235,6 +249,8 @@ var getCards = function (i) {
   newArticle.querySelector('.popup__photos').textContent = '';
   newArticle.querySelector('.popup__photos').appendChild(getPhotos(offers[i].offer.photos));
   mapSection.insertBefore(newArticle, afterArticle);
+  document.addEventListener('keydown', cardСloseKeydownHandler);
+  document.addEventListener('click', cardCloseClickHandler);
   return newArticle;
 };
 
@@ -265,6 +281,7 @@ var mainPinMouseUpHandler = function () {
   getActiveFieldsets();
   addressPart.value = PIN_CENTER_X + ', ' + PIN_CENTER_Y;
   getPins();
+  mainPin.removeEventListener('mouseup', mainPinMouseUpHandler);
 };
 
 var getActiveFieldsets = function () {
@@ -274,16 +291,10 @@ var getActiveFieldsets = function () {
   });
 };
 
-var cardClickHandler = function (evt) {
-  if (evt.target.classList.contains('popup__close')) {
-    closeCards();
-  }
-};
-
-var cardKeydownHandler = function (evt) {
-  if (evt.keyCode === KeyCodes.ESC) {
-    closeCards();
-  }
+var disableFieldsets = function () {
+  formFieldsets.forEach(function (item) {
+    item.setAttribute('disabled', true);
+  });
 };
 
 var closePins = function () {
@@ -293,33 +304,28 @@ var closePins = function () {
   });
 };
 
-var setMinMaxLengthTitle = function () {
-  formTitle.minLength = labelLimits.minimum;
-  formTitle.maxLength = labelLimits.maximum;
-};
-setMinMaxLengthTitle();
-
 var formTitleInvalidHandler = function () {
   var validity = formTitle.validity;
-  if (validity.valid) {
-    formTitle.setCustomValidity('');
-    formTitle.classList.remove(invalidBorderColorClass);
-    return;
-  }
-  if (validity.tooShort) {
-    formTitle.setCustomValidity(formTitleValidationMessages.tooShort);
-    formTitle.classList.add(invalidBorderColorClass);
-    return;
-  }
-  if (validity.tooLong) {
-    formTitle.setCustomValidity(formTitleValidationMessages.tooLong);
-    formTitle.classList.add(invalidBorderColorClass);
-    return;
-  }
-  if (validity.valueMissing) {
-    formTitle.setCustomValidity(formTitleValidationMessages.valueMissing);
-    formTitle.classList.add(invalidBorderColorClass);
-    return;
+  switch (validity) {
+    case (validity.valid):
+      formTitle.setCustomValidity('');
+      formTitle.classList.remove(invalidBorderColorClass);
+      break;
+
+    case (validity.tooShort):
+      formTitle.setCustomValidity(formTitleValidationMessages.tooShort);
+      formTitle.classList.add(invalidBorderColorClass);
+      break;
+
+    case (validity.tooLong):
+      formTitle.setCustomValidity(formTitleValidationMessages.tooLong);
+      formTitle.classList.add(invalidBorderColorClass);
+      break;
+
+    case (validity.valueMissing):
+      formTitle.setCustomValidity(formTitleValidationMessages.valueMissing);
+      formTitle.classList.add(invalidBorderColorClass);
+      break;
   }
 };
 
@@ -340,33 +346,26 @@ var formTypeChangeHandler = function () {
   formPrice.min = pricesLimits[formType.value];
 };
 
-var setMaxPrice = function () {
-  formPrice.max = MAX_PRICE;
-  formPrice.placeholder = pricesLimits.house;
-};
-setMaxPrice();
-
 var formPriceInvalidHandler = function () {
   var validity = formPrice.validity;
-  if (validity.valid) {
-    formPrice.setCustomValidity('');
-    formPrice.classList.remove(invalidBorderColorClass);
-    return;
-  }
-  if (validity.rangeUnderflow) {
-    formPrice.setCustomValidity(formPriceValidationMesssages.rangeUnderflow);
-    formPrice.classList.add(invalidBorderColorClass);
-    return;
-  }
-  if (validity.rangeOverflow) {
-    formPrice.setCustomValidity(formPriceValidationMesssages.rangeOverflow);
-    formPrice.classList.add(invalidBorderColorClass);
-    return;
-  }
-  if (validity.valueMissing) {
-    formPrice.setCustomValidity(formPriceValidationMesssages.valueMissing);
-    formPrice.classList.add(invalidBorderColorClass);
-    return;
+  switch (validity) {
+    case (validity.valid):
+      formPrice.setCustomValidity('');
+      formPrice.classList.remove(invalidBorderColorClass);
+      break;
+    case (validity.rangeUnderflow):
+      formPrice.setCustomValidity(formPriceValidationMesssages.rangeUnderflow);
+      formPrice.classList.add(invalidBorderColorClass);
+      break;
+    case (validity.rangeOverflow):
+      formPrice.setCustomValidity(formPriceValidationMesssages.rangeOverflow);
+      formPrice.classList.add(invalidBorderColorClass);
+      break;
+
+    case (validity.valueMissing):
+      formPrice.setCustomValidity(formPriceValidationMesssages.valueMissing);
+      formPrice.classList.add(invalidBorderColorClass);
+      break;
   }
 };
 
@@ -387,9 +386,12 @@ var formRoomNumberChangeHandler = function () {
   }
 };
 
-var formTimeChangeHandler = function (element) {
-  form.timein.value = element.target.value;
-  form.timeout.value = element.target.value;
+var formTimeOutChangeHandler = function () {
+  formTimeInSelect.value = formTimeOutSelect.value;
+};
+
+var formTimeInChangeHandler = function () {
+  formTimeOutSelect.value = formTimeInSelect.value;
 };
 
 var formSubmitButtonClickHandler = function () {
@@ -397,7 +399,7 @@ var formSubmitButtonClickHandler = function () {
   formPrice.addEventListener('invalid', formPriceInvalidHandler);
 };
 
-var resetForm = function () {
+var resetFormClickHandler = function () {
   formTitle.classList.remove(invalidBorderColorClass);
   formPrice.classList.remove(invalidBorderColorClass);
   form.reset();
@@ -405,20 +407,18 @@ var resetForm = function () {
   closePins();
   mapSection.classList.add('map--faded');
   form.classList.add('ad-form--disabled');
+  disableFieldsets();
 };
 
-mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
-document.addEventListener('click', cardClickHandler);
-document.addEventListener('keydown', cardKeydownHandler);
+mainPin.addEventListener('mouseup', mainPinMouseUpHandler);// удалила на строке 270
 
-formTitle.addEventListener('invalid', formTitleInvalidHandler);
 formTitle.addEventListener('blur', formTitleBlurHandler);
 formTitle.addEventListener('focus', formTitleFocusHandler);
 formTitle.addEventListener('change', formTitleChangeHandler);
-formType.addEventListener('change', formTypeChangeHandler);
-formPrice.addEventListener('invalid', formPriceInvalidHandler);
+formPrice.addEventListener('change', formTypeChangeHandler);
 formPrice.addEventListener('change', formPriceChangeHandler);
 formRoomNumber.addEventListener('change', formRoomNumberChangeHandler);
-form.addEventListener('change', formTimeChangeHandler);
+formTimeOutSelect.addEventListener('change', formTimeOutChangeHandler);
+formTimeInSelect.addEventListener('change', formTimeInChangeHandler);
 formSubmitButton.addEventListener('click', formSubmitButtonClickHandler);
-formResetButton.addEventListener('click', resetForm);
+formResetButton.addEventListener('click', resetFormClickHandler);
