@@ -291,12 +291,6 @@ var getActiveFieldsets = function () {
   });
 };
 
-var disableFieldsets = function () {
-  formFieldsets.forEach(function (item) {
-    item.setAttribute('disabled', true);
-  });
-};
-
 var closePins = function () {
   var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
   mapPins.forEach(function (item) {
@@ -407,7 +401,6 @@ var resetFormClickHandler = function () {
   closePins();
   mapSection.classList.add('map--faded');
   form.classList.add('ad-form--disabled');
-  disableFieldsets();
 };
 
 mainPin.addEventListener('mouseup', mainPinMouseUpHandler);// удалила на строке 270
