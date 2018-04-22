@@ -401,9 +401,13 @@ var resetFormClickHandler = function () {
   closePins();
   mapSection.classList.add('map--faded');
   form.classList.add('ad-form--disabled');
+  formFieldsets.forEach(function (item) {
+    item.setAttribute('disabled', true);
+  });
+  mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
 };
 
-mainPin.addEventListener('mouseup', mainPinMouseUpHandler);// удалила на строке 270
+mainPin.addEventListener('mouseup', mainPinMouseUpHandler);// удалила на строке 284
 
 formTitle.addEventListener('blur', formTitleBlurHandler);
 formTitle.addEventListener('focus', formTitleFocusHandler);
