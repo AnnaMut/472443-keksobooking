@@ -16,9 +16,9 @@ var GUESTS_MIN = 1;
 var GUESTS_MAX = 20;
 var PIN_WIDTH = 40;
 var PIN_HEIGHT = 44;
-var PIN_CENTER_X = 600;
-var PIN_CENTER_Y = 300;
 var MAX_PRICE = 1000000;
+var MAIN_PIN_WIDTH = 62;
+var MAIN_PIN_HEIGHT = 62;
 
 var offerTitles = [
   'Большая уютная квартира',
@@ -67,6 +67,14 @@ var KeyCodes = {
   ESC: 27,
   ENTER: 13
 };
+
+var MapCoords = {
+  TOP: 150,
+  BOTTOM: 500,
+  LEFT: 0,
+  RIGHT: 1100
+};
+var startCoords = {};
 
 var pinPrefix = 'pin-';
 var mainPin = document.querySelector('.map__pin--main');
@@ -279,7 +287,6 @@ var getPins = function () {
 var mainPinMouseUpHandler = function () {
   closePageOverlay();
   getActiveFieldsets();
-  addressPart.value = PIN_CENTER_X + ', ' + PIN_CENTER_Y;
   getPins();
   mainPin.removeEventListener('mouseup', mainPinMouseUpHandler);
 };
@@ -407,6 +414,59 @@ var resetFormClickHandler = function () {
   mainPin.addEventListener('mouseup', mainPinMouseUpHandler);
 };
 
+var fillAddressCoords = function (x, y) {
+  var positionX = parseInt(x, 10);
+  var positionY = parseInt(y, 10) + MAIN_PIN_HEIGHT / 2;
+  addressPart.value = positionX + ', ' + positionY;
+};
+
+var mouseMoveHandler = function (moveEvt) {
+  moveEvt.preventDefault();
+
+  var shift = {
+    x: startCoords.x - moveEvt.clientX,
+    y: startCoords.y - moveEvt.clientY
+  };
+
+  startCoords = {
+    x: moveEvt.clientX,
+    y: moveEvt.clientY
+  };
+
+  fillAddressCoords(mainPin.offsetLeft, mainPin.offsetTop);
+
+  var pinPosition = {
+    top: mainPin.offsetTop - shift.y,
+    left: mainPin.offsetLeft - shift.x
+  };
+
+  var limitPosition = function (element, min, max) {
+    return Math.min(Math.max(element, min), max);
+  };
+
+  pinPosition.left = limitPosition(pinPosition.left, MapCoords.LEFT + Math.ceil(MAIN_PIN_WIDTH / 2), MapCoords.RIGHT - Math.ceil(MAIN_PIN_WIDTH / 2));
+  pinPosition.top = limitPosition(pinPosition.top, MapCoords.TOP - Math.ceil(MAIN_PIN_HEIGHT / 2), MapCoords.BOTTOM - Math.ceil(MAIN_PIN_HEIGHT / 2));
+
+  mainPin.style.top = pinPosition.top + 'px';
+  mainPin.style.left = pinPosition.left + 'px';
+  fillAddressCoords(mainPin.style.top, mainPin.style.left);
+};
+
+var mouseUpHandler = function (upEvt) {
+  upEvt.preventDefault();
+  document.removeEventListener('mousemove', mouseMoveHandler);
+  document.removeEventListener('mouseup', mouseUpHandler);
+};
+
+var mainPinMouseDownHandler = function (downEvt) {
+  startCoords = {
+    x: downEvt.clientX,
+    y: downEvt.clientY
+  };
+  document.addEventListener('mousemove', mouseMoveHandler);
+  document.addEventListener('mouseup', mouseUpHandler);
+};
+
 mainPin.addEventListener('mouseup', mainPinMouseUpHandler);// удалила на строке 284
 
 formTitle.addEventListener('blur', formTitleBlurHandler);
@@ -419,3 +479,6 @@ formTimeOutSelect.addEventListener('change', formTimeOutChangeHandler);
 formTimeInSelect.addEventListener('change', formTimeInChangeHandler);
 formSubmitButton.addEventListener('click', formSubmitButtonClickHandler);
 formResetButton.addEventListener('click', resetFormClickHandler);
+
+
+mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
