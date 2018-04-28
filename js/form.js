@@ -151,7 +151,7 @@
     formPrice.addEventListener('invalid', formPriceInvalidHandler);
   };
 
-  var resetFormClickHandler = function () {
+  var deactivatePage = function () {
     formTitle.classList.remove(invalidBorderColorClass);
     formPrice.classList.remove(invalidBorderColorClass);
     form.reset();
@@ -164,8 +164,12 @@
     });
   };
 
+  var resetFormClickHandler = function () {
+    deactivatePage();
+  };
+
   var successHandler = function () {
-    form.reset();
+    deactivatePage();
     successMessage.classList.remove('hidden');
     successMessage.addEventListener('click', removeSuccessMessageHandler);
   };
