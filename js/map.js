@@ -6,10 +6,10 @@
   var TAIL_SHIFT_Y = 77;
 
   var MapCoords = {
-    TOP: 150 - TAIL_SHIFT_Y,
+    TOP: 150,
     BOTTOM: 500,
     LEFT: 0,
-    RIGHT: 1100 - TAIL_SHIFT_X
+    RIGHT: 1200
   };
 
   var startCoords = {};
@@ -35,13 +35,14 @@
     addressPart.value = positionX + ', ' + positionY;
   };
 
-  var mainPinMouseUpHandler = function () {
+  var mainPinMouseUpHandler = function (upEvt) {
+    upEvt.preventDefault();
     closePageOverlay();
     getActiveFieldsets();
     window.backend.loaddata(successHandler, window.backend.errorhandler);
-    mainPin.removeEventListener('mouseup', mainPinMouseUpHandler);
-    window.constandvars.mapsection.removeEventListener('mousemove', mouseMoveHandler);
-    fillAddressCoords(mainPin.offsetLeft + TAIL_SHIFT_X, mainPin.offsetTop + TAIL_SHIFT_Y);
+    document.removeEventListener('mouseup', mainPinMouseUpHandler);
+    document.removeEventListener('mousemove', mouseMoveHandler);
+    fillAddressCoords(mainPin.offsetLeft + TAIL_SHIFT_X / 2, mainPin.offsetTop + TAIL_SHIFT_Y);
   };
 
   var successHandler = function (offers) {
@@ -63,43 +64,47 @@
     };
 
     var pinPosition = {
-      left: mainPin.offsetLeft - shift.x,
-      top: mainPin.offsetTop - shift.y
+      x: mainPin.offsetLeft - shift.x,
+      y: mainPin.offsetTop - shift.y
     };
 
-    var limitPosition = function (element, min, max) {
-      return Math.min(Math.max(element, min), max);
+    var Border = {
+      TOP: MapCoords.TOP - TAIL_SHIFT_Y,
+      BOTTOM: MapCoords.BOTTOM - TAIL_SHIFT_Y,
+      LEFT: MapCoords.LEFT,
+      RIGHT: MapCoords.RIGHT - TAIL_SHIFT_X
     };
 
-    pinPosition.left = limitPosition(pinPosition.left, MapCoords.LEFT, MapCoords.RIGHT);
-    pinPosition.top = limitPosition(pinPosition.top, MapCoords.TOP, MapCoords.BOTTOM);
+    if (pinPosition.x >= Border.LEFT && pinPosition.x <= Border.RIGHT) {
+      mainPin.style.left = pinPosition.x + 'px';
+    }
 
-    mainPin.style.left = pinPosition.left + 'px';
-    mainPin.style.top = pinPosition.top + 'px';
+    if (pinPosition.y >= Border.TOP && pinPosition.y <= Border.BOTTOM) {
+      mainPin.style.top = pinPosition.y + 'px';
+    }
 
-    var newAddresscoors = {
-      x: pinPosition.left + 'px',
-      y: pinPosition.top + TAIL_SHIFT_Y + 'px',
-    };
-    fillAddressCoords(newAddresscoors.x, newAddresscoors.y);
+    var addressCoordsX = pinPosition.x + Math.ceil(TAIL_SHIFT_X / 2);
+    var addressCoordsY = pinPosition.y + TAIL_SHIFT_Y;
+
+    fillAddressCoords(addressCoordsX, addressCoordsY);
   };
 
   mainPin.addEventListener('mousedown', function (downEvt) {
+    downEvt.preventDefault();
     startCoords = {
       x: downEvt.clientX,
       y: downEvt.clientY
     };
-    window.constandvars.mapsection.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mousemove', mouseMoveHandler);
     document.addEventListener('mouseup', mainPinMouseUpHandler);
   });
 
   window.map = {
-    mainpinmouseuphandler: mainPinMouseUpHandler,
     mainpin: mainPin
   };
 
-  var KeyCodes = {
-    ESC: 27,
+  var KeyCodes = { // оставила открытие по энтеру пока как договорились, специально после экспорта это пишу
+    // ESC: 27,
     ENTER: 13
   };
   var mainPinKeyDownHandler = function (evt) {

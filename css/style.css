@@ -1218,3 +1218,16 @@ fieldset {
 {
     border: 1px solid #fa3710;
 }
+
+.error-node
+{
+    z-index: 100;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #C71585;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 200px;
+    font-size: 30px;
+}
