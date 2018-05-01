@@ -14,10 +14,11 @@
 
   var startCoords = {};
   var mainPin = document.querySelector('.map__pin--main');
+  var mapSection = document.querySelector('.map');
   var addressPart = document.querySelector('#address');
 
   var closePageOverlay = function () {
-    window.constandvars.mapsection.classList.remove('map--faded');
+    mapSection.classList.remove('map--faded');
   };
 
   var getActiveFieldsets = function () {
@@ -45,9 +46,28 @@
     fillAddressCoords(mainPin.offsetLeft + TAIL_SHIFT_X / 2, mainPin.offsetTop + TAIL_SHIFT_Y);
   };
 
+  var closePins = function () {
+    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    mapPins.forEach(function (item) {
+      item.parentNode.removeChild(item);
+    });
+  };
+
+  var deactivatePage = function () {
+    var form = document.querySelector('.ad-form');
+    var formFieldsets = document.querySelectorAll('.ad-form fieldset');
+    form.reset();
+    window.card.closecards();
+    closePins();
+    mapSection.classList.add('map--faded');
+    form.classList.add('ad-form--disabled');
+    formFieldsets.forEach(function (item) {
+      item.setAttribute('disabled', true);
+    });
+  };
+
   var successHandler = function (offers) {
-    window.constandvars.offers = offers;
-    window.pin.getpins();
+    window.pin.getpins(offers);
   };
 
   var mouseMoveHandler = function (moveEvt) {
@@ -100,7 +120,8 @@
   });
 
   window.map = {
-    mainpin: mainPin
+    mapsection: mapSection,
+    deactivatepage: deactivatePage
   };
 
   var KeyCodes = { // оставила открытие по энтеру пока как договорились, специально после экспорта это пишу

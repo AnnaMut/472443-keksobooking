@@ -4,30 +4,32 @@
 
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 44;
+  var OFFER_COUNT = 8;
 
-  var pinClass = '.map__pin';
+  var pin = '.map__pin';
 
-  var pinClickHandler = function (evt) {
-    window.card.closecards();
-    var index = parseInt(evt.currentTarget.id.substr(window.constandvars.pinprefix.length), 10);
-    evt.currentTarget.classList.add('map__pin--active');
-    window.card.getcards(index);
+  var createPin = function (offers) {
+    var pinTemplate = document.querySelector('template').content.querySelector(pin).cloneNode(true);
+    var template = pinTemplate.cloneNode(true);
+    template.style.left = offers.location.x - PIN_WIDTH + 'px';
+    template.style.top = offers.location.y - PIN_HEIGHT + 'px';
+    template.querySelector('img').src = offers.author.avatar;
+    template.addEventListener('click', function () {
+      window.card.getcards(offers);
+    });
+
+    return template;
   };
 
-  var getPins = function () {
+  var getPins = function (offers) {
+    var pins = [];
+    var fragment = document.createDocumentFragment();
     var pinsBox = document.querySelector('.map__pins');
-    var pinTemplate = document.querySelector('template').content.querySelector(pinClass);
-    var pinFragment = document.createDocumentFragment();
-    for (var i = 0; i < window.constandvars.offercount; i++) {
-      var template = pinTemplate.cloneNode(true);
-      template.style.left = window.constandvars.offers[i].location.x - PIN_WIDTH + 'px';
-      template.style.top = window.constandvars.offers[i].location.y - PIN_HEIGHT + 'px';
-      template.querySelector('img').src = window.constandvars.offers[i].author.avatar;
-      template.id = window.constandvars.pinprefix + i;
-      pinFragment.appendChild(template);
-      template.addEventListener('click', pinClickHandler);
+    for (var i = 0; i < OFFER_COUNT; i++) {
+
+      pins[i] = fragment.appendChild(createPin(offers[i]));
     }
-    pinsBox.appendChild(pinFragment);
+    pinsBox.appendChild(fragment);
   };
 
   window.pin = {

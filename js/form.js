@@ -4,7 +4,6 @@
 
   var MAX_PRICE = 1000000;
 
-  var formFieldsets = document.querySelectorAll('.ad-form fieldset');
   var form = document.querySelector('.ad-form');
   var formTitle = form.querySelector('#title');
   var invalidBorderColorClass = 'invalidcolor';
@@ -47,13 +46,6 @@
     rangeUnderflow: 'Цена для данного типа жилья слишком мала',
     rangeOverflow: 'Цена не должна превышать ' + MAX_PRICE,
     valueMissing: 'Пожалуйста, введите цену'
-  };
-
-  var closePins = function () {
-    var mapPins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    mapPins.forEach(function (item) {
-      item.parentNode.removeChild(item);
-    });
   };
 
   var formTitleInvalidHandler = function () {
@@ -151,25 +143,17 @@
     formPrice.addEventListener('invalid', formPriceInvalidHandler);
   };
 
-  var deactivatePage = function () {
-    formTitle.classList.remove(invalidBorderColorClass);
-    formPrice.classList.remove(invalidBorderColorClass);
-    form.reset();
-    window.card.closecards();
-    closePins();
-    window.constandvars.mapsection.classList.add('map--faded');
-    form.classList.add('ad-form--disabled');
-    formFieldsets.forEach(function (item) {
-      item.setAttribute('disabled', true);
-    });
-  };
 
   var resetFormClickHandler = function () {
-    deactivatePage();
+    window.map.deactivatepage();
+    formTitle.classList.remove(invalidBorderColorClass);
+    formPrice.classList.remove(invalidBorderColorClass);
   };
 
   var successHandler = function () {
-    deactivatePage();
+    window.map.deactivatepage.deactivatepage();
+    formTitle.classList.remove(invalidBorderColorClass);
+    formPrice.classList.remove(invalidBorderColorClass);
     successMessage.classList.remove('hidden');
     successMessage.addEventListener('click', removeSuccessMessageHandler);
   };
@@ -189,7 +173,7 @@
   formTitle.addEventListener('change', formTitleChangeHandler);
   formPrice.addEventListener('change', formTypeChangeHandler);
   formPrice.addEventListener('change', formPriceChangeHandler);
-  formRoomNumber.addEventListener('change', formRoomNumberChangeHandler);
+  form.addEventListener('change', formRoomNumberChangeHandler);
   formTimeOutSelect.addEventListener('change', formTimeOutChangeHandler);
   formTimeInSelect.addEventListener('change', formTimeInChangeHandler);
   formSubmitButton.addEventListener('click', formSubmitButtonClickHandler);

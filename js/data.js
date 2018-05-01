@@ -1,4 +1,5 @@
 'use strict';
+
 (function () {
 
   var PRICE_MIN = 1000;
