@@ -151,7 +151,7 @@
   };
 
   var successHandler = function () {
-    window.map.deactivatepage.deactivatepage();
+    window.map.deactivatepage();
     formTitle.classList.remove(invalidBorderColorClass);
     formPrice.classList.remove(invalidBorderColorClass);
     successMessage.classList.remove('hidden');

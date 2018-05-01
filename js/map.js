@@ -36,8 +36,8 @@
     addressPart.value = positionX + ', ' + positionY;
   };
 
-  var mainPinMouseUpHandler = function (upEvt) {
-    upEvt.preventDefault();
+  var mainPinMouseUpHandler = function () {
+    // upEvt.preventDefault();
     closePageOverlay();
     getActiveFieldsets();
     window.backend.loaddata(successHandler, window.backend.errorhandler);
