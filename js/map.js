@@ -4,6 +4,7 @@
 
   var TAIL_SHIFT_X = 31;
   var TAIL_SHIFT_Y = 77;
+  var KEYCODE_ENTER = 13;
 
   var MapCoords = {
     TOP: 150,
@@ -37,13 +38,18 @@
   };
 
   var mainPinMouseUpHandler = function () {
-    // upEvt.preventDefault();
     closePageOverlay();
     getActiveFieldsets();
     window.backend.loaddata(successHandler, window.backend.errorhandler);
     document.removeEventListener('mouseup', mainPinMouseUpHandler);
     document.removeEventListener('mousemove', mouseMoveHandler);
     fillAddressCoords(mainPin.offsetLeft + TAIL_SHIFT_X / 2, mainPin.offsetTop + TAIL_SHIFT_Y);
+  };
+
+  var mainPinKeyDownHandler = function (evt) {
+    if (evt.keyCode === KEYCODE_ENTER) {
+      mainPinMouseUpHandler();
+    }
   };
 
   var closePins = function () {
@@ -59,6 +65,7 @@
     form.reset();
     window.card.closecards();
     closePins();
+    window.filters.resetfilters();
     mapSection.classList.add('map--faded');
     form.classList.add('ad-form--disabled');
     formFieldsets.forEach(function (item) {
@@ -119,21 +126,12 @@
     document.addEventListener('mouseup', mainPinMouseUpHandler);
   });
 
+  mainPin.addEventListener('keydown', mainPinKeyDownHandler);
+
   window.map = {
     mapsection: mapSection,
-    deactivatepage: deactivatePage
+    closepins: closePins,
+    deactivatepage: deactivatePage,
   };
-
-  var KeyCodes = { // оставила открытие по энтеру пока как договорились, специально после экспорта это пишу
-    // ESC: 27,
-    ENTER: 13
-  };
-  var mainPinKeyDownHandler = function (evt) {
-    if (evt.keyCode === KeyCodes.ENTER) {
-      mainPinMouseUpHandler();
-    }
-    mainPin.removeEventListener('keydown', mainPinKeyDownHandler);
-  };
-  mainPin.addEventListener('keydown', mainPinKeyDownHandler);
 
 })();

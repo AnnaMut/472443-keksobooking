@@ -2,10 +2,7 @@
 
 (function () {
 
-  var KeyCodes = {
-    ESC: 27,
-    // ENTER: 13 перепишу когда решим что делать с активацией страницы по энтеру
-  };
+  var KEYCODE_ESC = 27;
 
   var typesDictionary = {
     palace: 'Дворец',
@@ -62,7 +59,7 @@
   };
 
   var cardСloseKeydownHandler = function (evt) {
-    if (evt.keyCode === KeyCodes.ESC) {
+    if (evt.keyCode === KEYCODE_ESC) {
       closeCards();
     }
   };

@@ -4,7 +4,7 @@
 
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 44;
-  var OFFER_COUNT = 8;
+  var OFFER_COUNT = 5;
 
   var pin = '.map__pin';
 
@@ -25,8 +25,8 @@
     var pins = [];
     var fragment = document.createDocumentFragment();
     var pinsBox = document.querySelector('.map__pins');
-    for (var i = 0; i < OFFER_COUNT; i++) {
-
+    var counter = Math.min(offers.length, OFFER_COUNT);
+    for (var i = 0; i < counter; i++) {
       pins[i] = fragment.appendChild(createPin(offers[i]));
     }
     pinsBox.appendChild(fragment);
