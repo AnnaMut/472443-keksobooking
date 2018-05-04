@@ -17,59 +17,58 @@
   var formResetButton = form.querySelector('.ad-form__reset');
   var successMessage = document.querySelector('.success');
 
-  var pricesLimits = {
-    'bungalo': 0,
-    'flat': 1000,
-    'house': 5000,
-    'palace': 10000
+  var PricesLimits = {
+    BUNGALO: 0,
+    FLAT: 1000,
+    HOUSE: 5000,
+    PALACE: 10000
   };
 
-  var labelLimits = {
-    'minimum': 30,
-    'maximum': 100
+  var LabelLimits = {
+    MINIMUM: 30,
+    MAXIMUM: 100
   };
 
-  var guests = {
+  var Guests = {
     '1': ['1'],
     '2': ['1', '2'],
     '3': ['1', '2', '3'],
     '100': ['0']
   };
 
-  var formTitleValidationMessages = {
-    tooShort: 'Заголовок объявления должен состоять минимум из ' + labelLimits.minimum + ' символов',
-    tooLong: 'Заголовок объявления не должен превышать ' + labelLimits.maximum + ' символов',
-    valueMissing: 'Пожалуйста, введите заголовок Вашего объявления'
+  var FormTitleValidationMessages = {
+    TOO_SHORT: 'Заголовок объявления должен состоять минимум из ' + LabelLimits.MINIMUM + ' символов',
+    TOO_LONG: 'Заголовок объявления не должен превышать ' + LabelLimits.MAXIMUM + ' символов',
+    VALUE_MISSING: 'Пожалуйста, введите заголовок Вашего объявления'
   };
 
-  var formPriceValidationMesssages = {
-    rangeUnderflow: 'Цена для данного типа жилья слишком мала',
-    rangeOverflow: 'Цена не должна превышать ' + MAX_PRICE,
-    valueMissing: 'Пожалуйста, введите цену'
+  var FormPriceValidationMesssages = {
+    RANGE_UNDER_FLOW: 'Цена для данного типа жилья слишком мала',
+    RANGE_OVER_FLOW: 'Цена не должна превышать ' + MAX_PRICE,
+    VALUE_MISSING: 'Пожалуйста, введите цену'
   };
 
   var formTitleInvalidHandler = function () {
     var validity = formTitle.validity;
-    switch (validity) {
-      case (validity.valid):
-        formTitle.setCustomValidity('');
-        formTitle.classList.remove(invalidBorderColorClass);
-        break;
-
-      case (validity.tooShort):
-        formTitle.setCustomValidity(formTitleValidationMessages.tooShort);
-        formTitle.classList.add(invalidBorderColorClass);
-        break;
-
-      case (validity.tooLong):
-        formTitle.setCustomValidity(formTitleValidationMessages.tooLong);
-        formTitle.classList.add(invalidBorderColorClass);
-        break;
-
-      case (validity.valueMissing):
-        formTitle.setCustomValidity(formTitleValidationMessages.valueMissing);
-        formTitle.classList.add(invalidBorderColorClass);
-        break;
+    if (validity.valid) {
+      formTitle.setCustomValidity('');
+      formTitle.classList.remove(invalidBorderColorClass);
+      return;
+    }
+    if (validity.tooShort) {
+      formTitle.setCustomValidity(FormTitleValidationMessages.TOO_SHORT);
+      formTitle.classList.add(invalidBorderColorClass);
+      return;
+    }
+    if (validity.tooLong) {
+      formTitle.setCustomValidity(FormTitleValidationMessages.TOO_LONG);
+      formTitle.classList.add(invalidBorderColorClass);
+      return;
+    }
+    if (validity.valueMissing) {
+      formTitle.setCustomValidity(FormTitleValidationMessages.VALUE_MISSING);
+      formTitle.classList.add(invalidBorderColorClass);
+      return;
     }
   };
 
@@ -87,29 +86,30 @@
   };
 
   var formTypeChangeHandler = function () {
-    formPrice.min = pricesLimits[formType.value];
+    formPrice.min = PricesLimits[formType.value.toUpperCase()];
   };
 
   var formPriceInvalidHandler = function () {
     var validity = formPrice.validity;
-    switch (validity) {
-      case (validity.valid):
-        formPrice.setCustomValidity('');
-        formPrice.classList.remove(invalidBorderColorClass);
-        break;
-      case (validity.rangeUnderflow):
-        formPrice.setCustomValidity(formPriceValidationMesssages.rangeUnderflow);
-        formPrice.classList.add(invalidBorderColorClass);
-        break;
-      case (validity.rangeOverflow):
-        formPrice.setCustomValidity(formPriceValidationMesssages.rangeOverflow);
-        formPrice.classList.add(invalidBorderColorClass);
-        break;
-
-      case (validity.valueMissing):
-        formPrice.setCustomValidity(formPriceValidationMesssages.valueMissing);
-        formPrice.classList.add(invalidBorderColorClass);
-        break;
+    if (validity.valid) {
+      formPrice.setCustomValidity('');
+      formPrice.classList.remove(invalidBorderColorClass);
+      return;
+    }
+    if (validity.rangeUnderflow) {
+      formPrice.setCustomValidity(FormPriceValidationMesssages.RANGE_UNDER_FLOW);
+      formPrice.classList.add(invalidBorderColorClass);
+      return;
+    }
+    if (validity.rangeOverflow) {
+      formPrice.setCustomValidity(FormPriceValidationMesssages.RANGE_OVER_FLOW);
+      formPrice.classList.add(invalidBorderColorClass);
+      return;
+    }
+    if (validity.valueMissing) {
+      formPrice.setCustomValidity(FormPriceValidationMesssages.VALUE_MISSING);
+      formPrice.classList.add(invalidBorderColorClass);
+      return;
     }
   };
 
@@ -120,9 +120,9 @@
 
   var formRoomNumberChangeHandler = function () {
     var key = formRoomNumber.value;
-    formRoomCapacity.value = guests[key][0];
+    formRoomCapacity.value = Guests[key][0];
     for (var i = 0; i < formRoomCapacity.options.length; i++) {
-      if (guests[key].indexOf(formRoomCapacity.options[i].value) === -1) {
+      if (Guests[key].indexOf(formRoomCapacity.options[i].value) === -1) {
         formRoomCapacity.options[i].setAttribute('disabled', '');
       } else {
         formRoomCapacity.options[i].removeAttribute('disabled');
@@ -143,11 +143,8 @@
     formPrice.addEventListener('invalid', formPriceInvalidHandler);
   };
 
-
   var resetFormClickHandler = function () {
     window.map.deactivatepage();
-    formTitle.classList.remove(invalidBorderColorClass);
-    formPrice.classList.remove(invalidBorderColorClass);
   };
 
   var successHandler = function () {

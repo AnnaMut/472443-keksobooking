@@ -3,7 +3,7 @@
 (function () {
 
   var ANY_FILTER = 'any';
-  var errorFilterMessage = 'Похожие объявления отсутствуют';
+
   var homeType = document.querySelector('#housing-type');
   var homePrice = document.querySelector('#housing-price');
   var homeRooms = document.querySelector('#housing-rooms');
@@ -12,10 +12,10 @@
   var featuresCollection = homeFeatures.querySelectorAll('input');
 
   var Prices = {
-    low: {min: 0, max: 9999},
-    middle: {min: 10000, max: 49999},
-    high: {min: 50000, max: 1000000},
-    any: {min: 0, max: 1000000}
+    LOW: {min: 0, max: 9999},
+    MIDDLE: {min: 10000, max: 49999},
+    HIGH: {min: 50000, max: 1000000},
+    ANY: {min: 0, max: 1000000}
   };
 
   var getHomeType = function (offer) {
@@ -23,7 +23,7 @@
   };
 
   var getHomePrice = function (offer) {
-    var priceType = Prices[homePrice.value];
+    var priceType = Prices[homePrice.value.toUpperCase()];
     return offer.offer.price >= priceType.min && offer.offer.price <= priceType.max;
   };
 
@@ -36,42 +36,25 @@
   };
 
   var getHomeFeatures = function (offer) {
-    var selectedFeature = [].filter.call(featuresCollection, function (item) {
-      return item.checked;
-    });
-    if (selectedFeature.length === 0) {
-      return true;
-    } else {
-      var count = 0;
-      [].forEach.call(selectedFeature, function (item) {
-        offer.offer.features.forEach(function (offerFeature) {
-          if (item.value === offerFeature) {
-            count++;
-          }
-        });
-      });
-      return count === selectedFeature.length;
+    for (var i = 0; i < featuresCollection.length; i++) {
+      if (featuresCollection[i].checked && offer.offer.features.indexOf(featuresCollection[i].value) < 0) {
+        return false;
+      }
     }
+    return true;
   };
 
   var filterChangeHandler = function () {
-    window.backend.loaddata(successHandler);
-  };
-
-  var successHandler = function (offers) {
     window.card.closecards();
     window.map.closepins();
-    var data = offers.slice(0);
-    var filteredOffers = data
+    var offers = window.map.offers.slice(0);
+    var filteredOffers = offers
         .filter(getHomeType)
         .filter(getHomePrice)
         .filter(getHomeRooms)
         .filter(getHomeGuests)
         .filter(getHomeFeatures);
-    if (filteredOffers.length === 0) {
-      window.backend.errorhandler(errorFilterMessage);
-    }
-    window.debounce.setdebounce(window.pin.getpins(filteredOffers));
+    window.debounce.setdebounce(window.map.getpins(filteredOffers));
   };
 
   var resetFilters = function () {

@@ -4,7 +4,6 @@
 
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 44;
-  var OFFER_COUNT = 5;
 
   var pin = '.map__pin';
 
@@ -21,19 +20,8 @@
     return template;
   };
 
-  var getPins = function (offers) {
-    var pins = [];
-    var fragment = document.createDocumentFragment();
-    var pinsBox = document.querySelector('.map__pins');
-    var counter = Math.min(offers.length, OFFER_COUNT);
-    for (var i = 0; i < counter; i++) {
-      pins[i] = fragment.appendChild(createPin(offers[i]));
-    }
-    pinsBox.appendChild(fragment);
-  };
-
   window.pin = {
-    getpins: getPins
+    createpin: createPin
   };
 
 })();

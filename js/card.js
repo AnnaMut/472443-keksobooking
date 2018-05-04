@@ -4,11 +4,11 @@
 
   var KEYCODE_ESC = 27;
 
-  var typesDictionary = {
-    palace: 'Дворец',
-    flat: 'Квартира',
-    house: 'Дом',
-    bungalo: 'Бунгало'
+  var TypesDictionary = {
+    PALACE: 'Дворец',
+    FLAT: 'Квартира',
+    HOUSE: 'Дом',
+    BUNGALO: 'Бунгало'
   };
 
   var getFeatures = function (arr) {
@@ -73,7 +73,7 @@
     newArticle.querySelector('.popup__title').textContent = offers.offer.title;
     newArticle.querySelector('.popup__text--address').textContent = offers.offer.address;
     newArticle.querySelector('.popup__text--price').textContent = offers.offer.price + ' ₽/ночь';
-    newArticle.querySelector('.popup__type').textContent = typesDictionary[offers.offer.type];
+    newArticle.querySelector('.popup__type').textContent = TypesDictionary[offers.offer.type.toUpperCase()];
     newArticle.querySelector('.popup__text--capacity').textContent = offers.offer.rooms + ' комнаты для ' + offers.offer.guests + ' гостей';
     newArticle.querySelector('.popup__text--time').textContent = 'Заезд после ' + offers.offer.checkin + ', выезд до ' + offers.offer.checkout;
     newArticle.querySelector('.popup__features').textContent = '';

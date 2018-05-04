@@ -8,9 +8,9 @@
   var TIME_OUT = 10000;
 
   var Messages = {
-    responseMessage: 'Статус ответа: ',
-    connectionError: 'Произошла ошибка соединения',
-    timeError: 'Запрос не успел выполниться за '
+    RESPONSE_MESSAGE: 'Статус ответа: ',
+    CONNECTION_ERROR: 'Произошла ошибка соединения',
+    TIME_ERROR: 'Запрос не успел выполниться за '
   };
 
   var getRequest = function (successHandler, errorHandler) {
@@ -21,14 +21,14 @@
       if (xhr.status === SUCСESS_STATUS) {
         successHandler(xhr.response);
       } else {
-        errorHandler(Messages.responseMessage + xhr.status + ' ' + xhr.statusText);
+        errorHandler(Messages.RESPONSE_MESSAGE + xhr.status + ' ' + xhr.statusText);
       }
     });
     xhr.addEventListener('error', function () {
-      errorHandler(Messages.connectionError);
+      errorHandler(Messages.CONNECTION_ERROR);
     });
     xhr.addEventListener('timeout', function () {
-      errorHandler(Messages.timeError + xhr.timeout + 'мс');
+      errorHandler(Messages.TIME_ERROR + xhr.timeout + 'мс');
     });
 
     xhr.timeout = TIME_OUT;
