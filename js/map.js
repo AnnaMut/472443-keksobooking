@@ -15,7 +15,6 @@
   };
 
   var startCoords = {};
-  var offers = [];
   var mainPin = document.querySelector('.map__pin--main');
   var mapSection = document.querySelector('.map');
   var addressPart = document.querySelector('#address');
@@ -51,8 +50,8 @@
   };
 
   var successHandler = function (data) {
-    offers = data.slice(0);
-    getPins(offers);
+    window.map.offers = data.slice(0);
+    getPins(window.map.offers);
   };
 
   var mainPinMouseUpHandler = function () {
@@ -159,7 +158,7 @@
     mapsection: mapSection,
     getpins: getPins,
     closepins: closePins,
-    offers: offers,
+    offers: [],
     deactivatepage: deactivatePage,
   };
 
