@@ -5,23 +5,21 @@
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 44;
 
-  var pin = '.map__pin';
-
-  var createPin = function (offers) {
-    var pinTemplate = document.querySelector('template').content.querySelector(pin).cloneNode(true);
-    var template = pinTemplate.cloneNode(true);
-    template.style.left = offers.location.x - PIN_WIDTH + 'px';
-    template.style.top = offers.location.y - PIN_HEIGHT + 'px';
-    template.querySelector('img').src = offers.author.avatar;
-    template.addEventListener('click', function () {
-      window.card.getcards(offers);
+  var createPin = function (data) {
+    var pin = document.querySelector('template').content.querySelector('.map__pin');
+    var newPin = pin.cloneNode(true);
+    newPin.style.left = data.location.x - PIN_WIDTH + 'px';
+    newPin.style.top = data.location.y - PIN_HEIGHT + 'px';
+    newPin.querySelector('img').src = data.author.avatar;
+    newPin.addEventListener('click', function () {
+      window.card.getCards(data);
     });
 
-    return template;
+    return newPin;
   };
 
   window.pin = {
-    createpin: createPin
+    createPin: createPin
   };
 
 })();

@@ -12,10 +12,10 @@
   var featuresCollection = homeFeatures.querySelectorAll('input');
 
   var Prices = {
-    LOW: {min: 0, max: 9999},
-    MIDDLE: {min: 10000, max: 49999},
-    HIGH: {min: 50000, max: 1000000},
-    ANY: {min: 0, max: 1000000}
+    low: {min: 0, max: 9999},
+    middle: {min: 10000, max: 49999},
+    high: {min: 50000, max: 1000000},
+    any: {min: 0, max: 1000000}
   };
 
   var getHomeType = function (offer) {
@@ -23,7 +23,7 @@
   };
 
   var getHomePrice = function (offer) {
-    var priceType = Prices[homePrice.value.toUpperCase()];
+    var priceType = Prices[homePrice.value];
     return offer.offer.price >= priceType.min && offer.offer.price <= priceType.max;
   };
 
@@ -45,8 +45,8 @@
   };
 
   var filterChangeHandler = function () {
-    window.card.closecards();
-    window.map.closepins();
+    window.card.closeCards();
+    window.map.removePins();
     var offers = window.map.offers.slice(0);
     var filteredOffers = offers
         .filter(getHomeType)
@@ -54,7 +54,7 @@
         .filter(getHomeRooms)
         .filter(getHomeGuests)
         .filter(getHomeFeatures);
-    window.debounce.setdebounce(window.map.getpins(filteredOffers));
+    window.debounce.setDebounce(window.map.renderPins(filteredOffers));
   };
 
   var resetFilters = function () {
@@ -75,7 +75,7 @@
   homeFeatures.addEventListener('change', filterChangeHandler);
 
   window.filters = {
-    resetfilters: resetFilters
+    resetFilters: resetFilters
   };
 
 })();

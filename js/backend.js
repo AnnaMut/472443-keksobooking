@@ -2,13 +2,15 @@
 
 (function () {
 
-  var URL = 'https://js.dump.academy/keksobooking';
-  var DATA_URL = 'https://js.dump.academy/keksobooking/data';
+  var Url = {
+    POST: 'https://js.dump.academy/keksobooking',
+    GET: 'https://js.dump.academy/keksobooking/data'
+  };
   var SUCСESS_STATUS = 200;
   var TIME_OUT = 10000;
 
   var Messages = {
-    RESPONSE_MESSAGE: 'Статус ответа: ',
+    RESPONSE: 'Статус ответа: ',
     CONNECTION_ERROR: 'Произошла ошибка соединения',
     TIME_ERROR: 'Запрос не успел выполниться за '
   };
@@ -21,7 +23,7 @@
       if (xhr.status === SUCСESS_STATUS) {
         successHandler(xhr.response);
       } else {
-        errorHandler(Messages.RESPONSE_MESSAGE + xhr.status + ' ' + xhr.statusText);
+        errorHandler(Messages.RESPONSE + xhr.status + ' ' + xhr.statusText);
       }
     });
     xhr.addEventListener('error', function () {
@@ -37,13 +39,13 @@
 
   var loadData = function (successHandler, errorHandler) {
     var xhr = getRequest(successHandler, errorHandler);
-    xhr.open('GET', DATA_URL);
+    xhr.open('GET', Url.GET);
     xhr.send();
   };
 
   var sendData = function (data, successHandler, errorHandler) {
     var xhr = getRequest(successHandler, errorHandler);
-    xhr.open('POST', URL);
+    xhr.open('POST', Url.POST);
     xhr.send(data);
   };
 
@@ -62,9 +64,9 @@
   };
 
   window.backend = {
-    loaddata: loadData,
-    senddata: sendData,
-    errorhandler: errorHandler
+    loadData: loadData,
+    sendData: sendData,
+    errorHandler: errorHandler
   };
 
 })();
