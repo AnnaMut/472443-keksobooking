@@ -36,12 +36,19 @@
   };
 
   var getHomeFeatures = function (offer) {
-    for (var i = 0; i < featuresCollection.length; i++) {
-      if (featuresCollection[i].checked && offer.offer.features.indexOf(featuresCollection[i].value) < 0) {
-        return false;
+    var checkedFeatures = [];
+    featuresCollection.forEach(function (item) {
+      if (item.checked) {
+        checkedFeatures.push(item.value);
       }
-    }
-    return true;
+    });
+    var isChecked = true;
+    checkedFeatures.forEach(function (item) {
+      if (!offer.offer.features.includes(item)) {
+        isChecked = false;
+      }
+    });
+    return isChecked;
   };
 
   var filterChangeHandler = function () {
