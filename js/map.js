@@ -2,7 +2,7 @@
 
 (function () {
 
-  var TAIL_SHIFT_X = 31;
+  var TAIL_SHIFT_X = 32.5;
   var TAIL_SHIFT_Y = 77;
   var KEYCODE_ENTER = 13;
   var OFFER_COUNT = 5;
