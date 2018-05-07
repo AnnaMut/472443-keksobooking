@@ -156,7 +156,7 @@
     roomCapacity.value = guests[0];
   };
 
-  var capacityChangeHandler = function () {
+  var roomcapacityChangeHandler = function () {
     var capacityValue = roomCapacity.value;
     if (!MaxGuests[roomNumber.value].includes(capacityValue)) {
       for (var key in MaxGuests) {
@@ -207,7 +207,7 @@
   price.addEventListener('focus', priceFocusHandler);
   price.addEventListener('change', priceChangeHandler);
   roomNumber.addEventListener('change', roomNumberChangeHandler);
-  roomCapacity.addEventListener('change', capacityChangeHandler);
+  roomCapacity.addEventListener('change', roomcapacityChangeHandler);
   timeOutSelect.addEventListener('change', timeOutChangeHandler);
   timeInSelect.addEventListener('change', timeInChangeHandler);
   resetButton.addEventListener('click', resetFormClickHandler);
