@@ -2,7 +2,7 @@
 
 (function () {
 
-  var TAIL_SHIFT_X = 31;
+  var TAIL_SHIFT_X = 32.5;
   var TAIL_SHIFT_Y = 77;
   var KEYCODE_ENTER = 13;
   var OFFER_COUNT = 5;
@@ -99,7 +99,7 @@
         TOP: MoveBorder.TOP - TAIL_SHIFT_Y,
         BOTTOM: MoveBorder.BOTTOM - TAIL_SHIFT_Y,
         LEFT: MoveBorder.LEFT,
-        RIGHT: MoveBorder.RIGHT - TAIL_SHIFT_X
+        RIGHT: MoveBorder.RIGHT - TAIL_SHIFT_X * 2
       };
       if (pinPosition.x >= Border.LEFT && pinPosition.x <= Border.RIGHT) {
         mainPin.style.left = pinPosition.x + 'px';
@@ -107,7 +107,8 @@
       if (pinPosition.y >= Border.TOP && pinPosition.y <= Border.BOTTOM) {
         mainPin.style.top = pinPosition.y + 'px';
       }
-      var addressCoordsX = pinPosition.x + Math.ceil(TAIL_SHIFT_X / 2);
+
+      var addressCoordsX = pinPosition.x + Math.ceil(TAIL_SHIFT_X);
       var addressCoordsY = pinPosition.y + TAIL_SHIFT_Y;
 
       fillAddressCoords(addressCoordsX, addressCoordsY);

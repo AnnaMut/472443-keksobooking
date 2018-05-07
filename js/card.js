@@ -13,24 +13,22 @@
 
   var getFeatures = function (data) {
     var features = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
-      var feature = document.createElement('li');
-      feature.classList.add('feature');
-      feature.classList.add('feature--' + data[i]);
-      features.appendChild(feature);
-    }
+    var feature = document.createElement('li');
+    feature.classList.add('popup__feature');
+    feature.classList.add('popup__feature--' + data);
+    features.appendChild(feature);
     return features;
   };
 
+
   var getPhotos = function (data) {
     var photos = document.createDocumentFragment();
-    for (var i = 0; i < data.length; i++) {
-      var photo = document.createElement('img');
-      photo.src = data[i];
-      photo.style = 'width:' + '70px';
-      photo.style = 'height:' + '70px';
-      photos.appendChild(photo);
-    }
+    var photo = document.createElement('img');
+    photo.classList.add('popup__photo');
+    photo.src = data;
+    photo.width = 30;
+    photo.height = 30;
+    photos.appendChild(photo);
     return photos;
   };
 
@@ -74,10 +72,14 @@
     newCard.querySelector('.popup__text--capacity').textContent = data.offer.rooms + ' комнаты для ' + data.offer.guests + ' гостей';
     newCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
     newCard.querySelector('.popup__features').textContent = '';
-    newCard.querySelector('.popup__features').appendChild(getFeatures(data.offer.features));
+    data.offer.features.forEach(function (item) {
+      newCard.querySelector('.popup__features').appendChild(getFeatures(item));
+    });
     newCard.querySelector('.popup__features + p').textContent = data.offer.description;
     newCard.querySelector('.popup__photos').textContent = '';
-    newCard.querySelector('.popup__photos').appendChild(getPhotos(data.offer.photos));
+    data.offer.photos.forEach(function (item) {
+      newCard.querySelector('.popup__photos').appendChild(getPhotos(item));
+    });
     window.map.mapSection.insertBefore(newCard, document.querySelector('.map__filters-container'));
     document.addEventListener('keydown', cardСloseKeydownHandler);
     document.addEventListener('click', cardCloseClickHandler);

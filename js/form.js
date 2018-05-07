@@ -59,6 +59,7 @@
     form.reset();
     title.classList.remove('invalidcolor');
     price.classList.remove('invalidcolor');
+    window.upload.removeUpload();
     form.classList.add('ad-form--disabled');
     fieldsets.forEach(function (item) {
       item.setAttribute('disabled', true);
@@ -130,19 +131,40 @@
     }
   };
 
+  var priceBlurHandler = function (evt) {
+    evt.target.checkValidity();
+  };
+
+  var priceFocusHandler = function () {
+    price.classList.remove(invalidBorderColorClass);
+  };
+
   var priceChangeHandler = function () {
     price.setCustomValidity('');
     price.classList.remove(invalidBorderColorClass);
   };
 
   var roomNumberChangeHandler = function () {
-    var key = roomNumber.value;
-    roomCapacity.value = MaxGuests[key][0];
-    for (var i = 0; i < roomCapacity.options.length; i++) {
-      if (MaxGuests[key].indexOf(roomCapacity.options[i].value) === -1) {
-        roomCapacity.options[i].setAttribute('disabled', '');
+    var guests = MaxGuests[roomNumber.value];
+    Array.prototype.forEach.call(roomCapacity.options, function (item) {
+      if (guests.includes(item.value)) {
+        item.removeAttribute('disabled');
       } else {
-        roomCapacity.options[i].removeAttribute('disabled');
+        item.setAttribute('disabled', '');
+      }
+    });
+    roomCapacity.value = guests[0];
+  };
+
+  var roomcapacityChangeHandler = function () {
+    var capacityValue = roomCapacity.value;
+    if (!MaxGuests[roomNumber.value].includes(capacityValue)) {
+      for (var key in MaxGuests) {
+        if (MaxGuests[key].includes(capacityValue)) {
+          roomNumber.value = key;
+          roomNumberChangeHandler();
+          return;
+        }
       }
     }
   };
@@ -181,8 +203,11 @@
   title.addEventListener('change', titleChangeHandler);
   price.addEventListener('invalid', priceInvalidHandler);
   price.addEventListener('change', typeChangeHandler);
+  price.addEventListener('blur', priceBlurHandler);
+  price.addEventListener('focus', priceFocusHandler);
   price.addEventListener('change', priceChangeHandler);
-  form.addEventListener('change', roomNumberChangeHandler);
+  roomNumber.addEventListener('change', roomNumberChangeHandler);
+  roomCapacity.addEventListener('change', roomcapacityChangeHandler);
   timeOutSelect.addEventListener('change', timeOutChangeHandler);
   timeInSelect.addEventListener('change', timeInChangeHandler);
   resetButton.addEventListener('click', resetFormClickHandler);
