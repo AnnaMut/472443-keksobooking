@@ -26,8 +26,8 @@
     var photo = document.createElement('img');
     photo.classList.add('popup__photo');
     photo.src = data;
-    photo.style = 'width:' + '70px';
-    photo.style = 'height:' + '70px';
+    photo.width = 30;
+    photo.height = 30;
     photos.appendChild(photo);
     return photos;
   };
