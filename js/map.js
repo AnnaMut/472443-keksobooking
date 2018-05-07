@@ -9,7 +9,7 @@
 
   var MoveBorder = {
     TOP: 150,
-    BOTTOM: 500, // координата оставлена как соответствующая ТЗ
+    BOTTOM: 500,
     LEFT: 0,
     RIGHT: 1200
   };

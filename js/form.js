@@ -146,7 +146,7 @@
 
   var roomNumberChangeHandler = function () {
     var guests = MaxGuests[roomNumber.value];
-    [].forEach.call(roomCapacity.options, function (item) {
+    Array.prototype.forEach.call(roomCapacity.options, function (item) {
       if (guests.includes(item.value)) {
         item.removeAttribute('disabled');
       } else {
