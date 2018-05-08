@@ -68,25 +68,19 @@
 
   var titleInvalidHandler = function () {
     var validity = title.validity;
-    if (validity.valid) {
-      title.setCustomValidity('');
-      title.classList.remove(invalidBorderColorClass);
-      return;
-    }
     if (validity.tooShort) {
       title.setCustomValidity(TitleValidationMessages.TOO_SHORT);
       title.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.tooLong) {
+    } else if (validity.tooLong) {
       title.setCustomValidity(TitleValidationMessages.TOO_LONG);
       title.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.valueMissing) {
+    } else if (validity.valueMissing) {
       title.setCustomValidity(TitleValidationMessages.VALUE_MISSING);
       title.classList.add(invalidBorderColorClass);
-      return;
+    } else {
+      title.setCustomValidity('');
+      title.classList.remove(invalidBorderColorClass);
+
     }
   };
 
@@ -98,7 +92,7 @@
     title.classList.remove(invalidBorderColorClass);
   };
 
-  var titleChangeHandler = function () {
+  var titleInputChangeHandler = function () {
     title.setCustomValidity('');
     title.classList.remove(invalidBorderColorClass);
   };
@@ -139,7 +133,7 @@
     price.classList.remove(invalidBorderColorClass);
   };
 
-  var priceChangeHandler = function () {
+  var priceInputChangeHandler = function () {
     price.setCustomValidity('');
     price.classList.remove(invalidBorderColorClass);
   };
@@ -200,12 +194,12 @@
   title.addEventListener('invalid', titleInvalidHandler);
   title.addEventListener('blur', titleBlurHandler);
   title.addEventListener('focus', titleFocusHandler);
-  title.addEventListener('change', titleChangeHandler);
+  title.addEventListener('input', titleInputChangeHandler);
   price.addEventListener('invalid', priceInvalidHandler);
   price.addEventListener('change', typeChangeHandler);
   price.addEventListener('blur', priceBlurHandler);
   price.addEventListener('focus', priceFocusHandler);
-  price.addEventListener('change', priceChangeHandler);
+  price.addEventListener('input', priceInputChangeHandler);
   roomNumber.addEventListener('change', roomNumberChangeHandler);
   roomCapacity.addEventListener('change', roomcapacityChangeHandler);
   timeOutSelect.addEventListener('change', timeOutChangeHandler);
