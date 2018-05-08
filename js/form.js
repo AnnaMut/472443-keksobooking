@@ -68,19 +68,25 @@
 
   var titleInvalidHandler = function () {
     var validity = title.validity;
+    if (validity.valid) {
+      title.setCustomValidity('');
+      title.classList.remove(invalidBorderColorClass);
+      return;
+    }
     if (validity.tooShort) {
       title.setCustomValidity(TitleValidationMessages.TOO_SHORT);
       title.classList.add(invalidBorderColorClass);
-    } else if (validity.tooLong) {
+      return;
+    }
+    if (validity.tooLong) {
       title.setCustomValidity(TitleValidationMessages.TOO_LONG);
       title.classList.add(invalidBorderColorClass);
-    } else if (validity.valueMissing) {
+      return;
+    }
+    if (validity.valueMissing) {
       title.setCustomValidity(TitleValidationMessages.VALUE_MISSING);
       title.classList.add(invalidBorderColorClass);
-    } else {
-      title.setCustomValidity('');
-      title.classList.remove(invalidBorderColorClass);
-
+      return;
     }
   };
 
