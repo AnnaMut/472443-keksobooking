@@ -15,7 +15,7 @@
   var resetButton = form.querySelector('.ad-form__reset');
   var successMessage = document.querySelector('.success');
 
-  var MaxPrice = {
+  var MinPrice = {
     BUNGALO: 0,
     FLAT: 1000,
     HOUSE: 5000,
@@ -81,15 +81,14 @@
   };
 
   var priceInputChangeHandler = function () {
-    price.min = MaxPrice[type.value.toUpperCase()];
     if (+price.value >= +price.min && +price.value <= +price.max) {
       setFieldValidity(price, true);
     }
   };
 
   var typeChangeHandler = function () {
-    price.min = MaxPrice[type.value.toUpperCase()];
-    price.placeholder = MaxPrice[type.value.toUpperCase()];
+    price.min = MinPrice[type.value.toUpperCase()];
+    price.placeholder = MinPrice[type.value.toUpperCase()];
     setFieldValidity(price, true);
   };
 
