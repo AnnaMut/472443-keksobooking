@@ -2,12 +2,10 @@
 
 (function () {
 
-  var MAX_PRICE = 1000000;
-
   var form = document.querySelector('.ad-form');
   var fieldsets = document.querySelectorAll('.ad-form fieldset');
   var title = form.querySelector('#title');
-  var invalidBorderColorClass = 'invalidcolor';
+  var invalidBorderColor = 'invalidcolor';
   var type = form.querySelector('#type');
   var price = form.querySelector('#price');
   var roomNumber = form.querySelector('#room_number');
@@ -24,11 +22,6 @@
     PALACE: 10000
   };
 
-  var TitleLength = {
-    MINIMUM: 30,
-    MAXIMUM: 100
-  };
-
   var MaxGuests = {
     '1': ['1'],
     '2': ['1', '2'],
@@ -36,16 +29,12 @@
     '100': ['0']
   };
 
-  var TitleValidationMessages = {
-    TOO_SHORT: 'Заголовок объявления должен состоять минимум из ' + TitleLength.MINIMUM + ' символов',
-    TOO_LONG: 'Заголовок объявления не должен превышать ' + TitleLength.MAXIMUM + ' символов',
-    VALUE_MISSING: 'Пожалуйста, введите заголовок Вашего объявления'
-  };
+  var titleValidationMessage = 'Заголовок должен быть длиной от 30 до 100 символов';
 
-  var PriceValidationMesssages = {
-    RANGE_UNDER_FLOW: 'Цена для данного типа жилья слишком мала',
-    RANGE_OVER_FLOW: 'Цена не должна превышать ' + MAX_PRICE,
-    VALUE_MISSING: 'Пожалуйста, введите цену'
+  var LabelPath = {
+    FIRST: 'Цена должна быть от ',
+    SECOND: ' до ',
+    THIRD: ' рублей'
   };
 
   var activateForm = function () {
@@ -66,82 +55,42 @@
     });
   };
 
+  var setFieldValidity = function (field, isValid, message) {
+    if (isValid) {
+      field.setCustomValidity('');
+      field.classList.remove(invalidBorderColor);
+    } else {
+      field.setCustomValidity(message);
+      field.classList.add(invalidBorderColor);
+    }
+  };
+
   var titleInvalidHandler = function () {
-    var validity = title.validity;
-    if (validity.valid) {
-      title.setCustomValidity('');
-      title.classList.remove(invalidBorderColorClass);
-      return;
-    }
-    if (validity.tooShort) {
-      title.setCustomValidity(TitleValidationMessages.TOO_SHORT);
-      title.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.tooLong) {
-      title.setCustomValidity(TitleValidationMessages.TOO_LONG);
-      title.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.valueMissing) {
-      title.setCustomValidity(TitleValidationMessages.VALUE_MISSING);
-      title.classList.add(invalidBorderColorClass);
-      return;
-    }
-  };
-
-  var titleBlurHandler = function (evt) {
-    evt.target.checkValidity();
-  };
-
-  var titleFocusHandler = function () {
-    title.classList.remove(invalidBorderColorClass);
+    setFieldValidity(title, false, titleValidationMessage);
   };
 
   var titleInputChangeHandler = function () {
-    title.setCustomValidity('');
-    title.classList.remove(invalidBorderColorClass);
+    if (title.value.length >= title.minLength && title.value.length <= title.maxLength) {
+      setFieldValidity(title, true);
+    }
+  };
+
+  var priceInvalidHandler = function () {
+    var validationLabel = LabelPath.FIRST + price.min + LabelPath.SECOND + price.max + LabelPath.THIRD;
+    setFieldValidity(price, false, validationLabel);
+  };
+
+  var priceInputChangeHandler = function () {
+    price.min = MaxPrice[type.value.toUpperCase()];
+    if (+price.value >= +price.min && +price.value <= +price.max) {
+      setFieldValidity(price, true);
+    }
   };
 
   var typeChangeHandler = function () {
     price.min = MaxPrice[type.value.toUpperCase()];
-  };
-
-  var priceInvalidHandler = function () {
-    var validity = price.validity;
-    if (validity.valid) {
-      price.setCustomValidity('');
-      price.classList.remove(invalidBorderColorClass);
-      return;
-    }
-    if (validity.rangeUnderflow) {
-      price.setCustomValidity(PriceValidationMesssages.RANGE_UNDER_FLOW);
-      price.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.rangeOverflow) {
-      price.setCustomValidity(PriceValidationMesssages.RANGE_OVER_FLOW);
-      price.classList.add(invalidBorderColorClass);
-      return;
-    }
-    if (validity.valueMissing) {
-      price.setCustomValidity(PriceValidationMesssages.VALUE_MISSING);
-      price.classList.add(invalidBorderColorClass);
-      return;
-    }
-  };
-
-  var priceBlurHandler = function (evt) {
-    evt.target.checkValidity();
-  };
-
-  var priceFocusHandler = function () {
-    price.classList.remove(invalidBorderColorClass);
-  };
-
-  var priceInputChangeHandler = function () {
-    price.setCustomValidity('');
-    price.classList.remove(invalidBorderColorClass);
+    price.placeholder = MaxPrice[type.value.toUpperCase()];
+    setFieldValidity(price, true);
   };
 
   var roomNumberChangeHandler = function () {
@@ -193,18 +142,14 @@
   };
 
   var sendDataHandler = function (evt) {
-    window.backend.sendData(new FormData(form), successHandler, window.backend.errorHandler);
     evt.preventDefault();
+    window.backend.sendData(new FormData(form), successHandler, window.backend.errorHandler);
   };
 
   title.addEventListener('invalid', titleInvalidHandler);
-  title.addEventListener('blur', titleBlurHandler);
-  title.addEventListener('focus', titleFocusHandler);
   title.addEventListener('input', titleInputChangeHandler);
+  type.addEventListener('change', typeChangeHandler);
   price.addEventListener('invalid', priceInvalidHandler);
-  price.addEventListener('change', typeChangeHandler);
-  price.addEventListener('blur', priceBlurHandler);
-  price.addEventListener('focus', priceFocusHandler);
   price.addEventListener('input', priceInputChangeHandler);
   roomNumber.addEventListener('change', roomNumberChangeHandler);
   roomCapacity.addEventListener('change', roomcapacityChangeHandler);
