@@ -30,7 +30,7 @@
   };
 
   var setDefaultAdressCoords = function () {
-    addressPart.value = MainPinDefaultPosition.X + Math.ceil(TAIL_SHIFT_X) + ', ' + (MainPinDefaultPosition.Y + TAIL_SHIFT_Y);
+    addressPart.value = MainPinDefaultPosition.X + ', ' + MainPinDefaultPosition.Y;
   };
 
   var resetMainPinPosition = function () {
