@@ -20,7 +20,6 @@
     return features;
   };
 
-
   var getPhotos = function (data) {
     var photos = document.createDocumentFragment();
     var photo = document.createElement('img');
